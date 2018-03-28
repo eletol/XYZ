@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMSIntegration", "SMSIntegration\SMSIntegration.csproj", "{80B76766-0FA1-4172-BC7A-516106E34EF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireBaseNotificationIntegrations", "FireBaseNotificationIntegrations\FireBaseNotificationIntegrations.csproj", "{2F58F3DE-8AD0-46D3-AF05-C90C5ACD3B70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYZ.Admins", "XYZ.Admins\XYZ.Admins.csproj", "{56119552-DFEC-494C-A6F6-94815FCEA412}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYZ.APIs", "XYZ.APIs\XYZ.APIs.csproj", "{22771586-3837-4226-9E1A-2CA4CF724AB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYZ.BL", "XYZ.BL\XYZ.BL.csproj", "{7001A03B-FF35-42E6-A52D-A09B71B57606}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYZ.Clients", "XYZ.Clients\XYZ.Clients.csproj", "{CFBAC773-2F9E-4A70-9738-51F6412BA676}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XYZ.DAL", "XYZ.DAL\XYZ.DAL.csproj", "{8D6D01BF-60B5-427B-8571-8BECCDD51AC8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{80B76766-0FA1-4172-BC7A-516106E34EF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80B76766-0FA1-4172-BC7A-516106E34EF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80B76766-0FA1-4172-BC7A-516106E34EF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80B76766-0FA1-4172-BC7A-516106E34EF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F58F3DE-8AD0-46D3-AF05-C90C5ACD3B70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F58F3DE-8AD0-46D3-AF05-C90C5ACD3B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F58F3DE-8AD0-46D3-AF05-C90C5ACD3B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F58F3DE-8AD0-46D3-AF05-C90C5ACD3B70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56119552-DFEC-494C-A6F6-94815FCEA412}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56119552-DFEC-494C-A6F6-94815FCEA412}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56119552-DFEC-494C-A6F6-94815FCEA412}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56119552-DFEC-494C-A6F6-94815FCEA412}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22771586-3837-4226-9E1A-2CA4CF724AB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22771586-3837-4226-9E1A-2CA4CF724AB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22771586-3837-4226-9E1A-2CA4CF724AB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22771586-3837-4226-9E1A-2CA4CF724AB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7001A03B-FF35-42E6-A52D-A09B71B57606}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7001A03B-FF35-42E6-A52D-A09B71B57606}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7001A03B-FF35-42E6-A52D-A09B71B57606}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7001A03B-FF35-42E6-A52D-A09B71B57606}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFBAC773-2F9E-4A70-9738-51F6412BA676}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFBAC773-2F9E-4A70-9738-51F6412BA676}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFBAC773-2F9E-4A70-9738-51F6412BA676}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFBAC773-2F9E-4A70-9738-51F6412BA676}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D6D01BF-60B5-427B-8571-8BECCDD51AC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D6D01BF-60B5-427B-8571-8BECCDD51AC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D6D01BF-60B5-427B-8571-8BECCDD51AC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D6D01BF-60B5-427B-8571-8BECCDD51AC8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

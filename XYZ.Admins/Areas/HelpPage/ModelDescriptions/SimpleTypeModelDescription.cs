@@ -1,0 +1,6 @@
+namespace XYZ.Admins.Areas.HelpPage.ModelDescriptions
+{
+    public class SimpleTypeModelDescription : ModelDescription
+    {
+    }
+}
