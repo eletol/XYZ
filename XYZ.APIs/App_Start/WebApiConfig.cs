@@ -4,7 +4,6 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.ExceptionHandling;
 using System.Web.Http.OData.Extensions;
-using Checkout.ApiServices.SharedModels;
 using XYZ.APIs.Logging;
 using XYZ.DAL.Models;
 using Ninject.Activation;
@@ -13,7 +12,6 @@ using Microsoft.Data.OData;
 using System.Web.OData.Batch;
 using System.Web.OData.Extensions;
 using System.Web.OData.Builder;
-using DAL.Models;
 using XYZ.BL.ViewModels;
 using Microsoft.OData.Edm;
 namespace XYZ.APIs
@@ -75,9 +73,16 @@ namespace XYZ.APIs
             };
 
     
-            builder.EntitySet<AdminVM>("Admins").EntityType.HasKey(s => s.Id);
-            builder.EntitySet<ClientUserVM>("ClientUsers").EntityType.HasKey(s => s.Id);
-            builder.EntitySet<PlayerStatusVM>("PlayerCategorys").EntityType.HasKey(s => s.Id);
+            builder.EntitySet<Admin>("Admins").EntityType.HasKey(s => s.Id);
+            builder.EntitySet<User>("Users").EntityType.HasKey(s => s.Id);
+            builder.EntitySet<TagStatus>("TagStatuses").EntityType.HasKey(s => s.Id);
+            builder.EntitySet<DAL.Models.Group>("Groups").EntityType.HasKey(s => s.Id);
+            builder.EntitySet<Tag>("Tags").EntityType.HasKey(s => s.Id);
+            builder.EntitySet<UserFriend>("UserFriends").EntityType.HasKey(s => s.Id);
+            builder.EntitySet<UserGroup>("UserGroups").EntityType.HasKey(s => s.Id);
+            builder.EntitySet<UserDevice>("UserDevices").EntityType.HasKey(s => s.Id);
+            builder.EntitySet<UserFriendBlock>("UserFriendBlocks").EntityType.HasKey(s => s.Id);
+            builder.EntitySet<TagLog>("TagLog").EntityType.HasKey(s => s.Id);
 
             var edmModel = builder.GetEdmModel();
 

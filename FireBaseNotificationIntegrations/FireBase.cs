@@ -16,6 +16,7 @@ namespace FireBaseNotificationIntegrations
         static readonly string SenderId = ConfigurationManager.AppSettings["FireBase.SenderId"];
 
         public const string  SendToAll  = "/topics/all";
+
         public static void SendPushNotification(string deviceId, string title,string body,dynamic dataObj=null)
         {
 

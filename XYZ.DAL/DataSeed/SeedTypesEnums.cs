@@ -40,7 +40,7 @@
 
     }
 
-    public static class PlayerStatuses
+    public static class TagStatuses
     {
         public static readonly SeedType Active = new SeedType { Id = 1, Name = "Active" };
         public static readonly SeedType InActive = new SeedType { Id = 2, Name = "InActive" };

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -7,16 +8,20 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
+using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
+using Newtonsoft.Json.Linq;
+using Tweetinvi;
 using XYZ.Clients.Models;
 using XYZ.Clients.Providers;
 using XYZ.Clients.Results;
 using XYZ.DAL.Models;
+using User = XYZ.DAL.Models.User;
 
 namespace XYZ.Clients.Controllers
 {
@@ -26,6 +31,7 @@ namespace XYZ.Clients.Controllers
     {
         private const string LocalLoginProvider = "Local";
         private ApplicationUserManager _userManager;
+        private ApplicationRoleManager _appRoleManager = null;
 
         public AccountController()
         {
@@ -37,7 +43,13 @@ namespace XYZ.Clients.Controllers
             UserManager = userManager;
             AccessTokenFormat = accessTokenFormat;
         }
-
+        protected ApplicationRoleManager AppRoleManager
+        {
+            get
+            {
+                return _appRoleManager ?? Request.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+            }
+        }
         public ApplicationUserManager UserManager
         {
             get
@@ -79,7 +91,7 @@ namespace XYZ.Clients.Controllers
         //[Route("ManageInfo")]
         //public async Task<ManageInfoViewModel> GetManageInfo(string returnUrl, bool generateState = false)
         //{
-        //    ClientUser user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+        //    User user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
 
         //    if (user == null)
         //    {
@@ -251,7 +263,7 @@ namespace XYZ.Clients.Controllers
         //        return new ChallengeResult(provider, this);
         //    }
 
-        //    ClientUser user = await UserManager.FindAsync(new UserLoginInfo(externalLogin.LoginProvider,
+        //    User user = await UserManager.FindAsync(new UserLoginInfo(externalLogin.LoginProvider,
         //        externalLogin.ProviderKey));
 
         //    bool hasRegistered = user != null;
@@ -329,7 +341,7 @@ namespace XYZ.Clients.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = new ClientUser() { UserName = model.Email, Email = model.Email };
+            var user = new User() { UserName = model.Email, Email = model.Email };
 
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
@@ -358,7 +370,7 @@ namespace XYZ.Clients.Controllers
                 return InternalServerError();
             }
 
-            var user = new ClientUser() { UserName = model.Email, Email = model.Email };
+            var user = new User() { UserName = model.Email, Email = model.Email };
 
             IdentityResult result = await UserManager.CreateAsync(user);
             if (!result.Succeeded)
@@ -384,7 +396,237 @@ namespace XYZ.Clients.Controllers
 
             base.Dispose(disposing);
         }
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.Route("FacebookRegister")]
+        public async Task<IHttpActionResult> FacebookRegister(RegisterExternalBindingModel3 model)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(model.Token))
+                {
+                    return BadRequest("Invalid OAuth access token");
+                }
 
+                var tokenExpirationTimeSpan = TimeSpan.FromDays(360);
+                // Get the fb access token and make a graph call to the /me endpoint
+                var fbUser = await VerifyFacebookAccessToken(model.Token);
+                if (fbUser?.Email == null)
+                {
+                    return BadRequest("Invalid OAuth access token");
+                }
+
+                // Check if the user is already registered
+                var user = await UserManager.FindByEmailAsync(fbUser.Email);
+                // If not, register it
+                if (user == null)
+                {
+                    var userPassword = "Ma3lesh" + fbUser.ID.ToString();
+                    var randomPassword = System.Web.Security.Membership.GeneratePassword(10, 0) + "1Ds@";
+                    user = new User() { UserName = fbUser.Email,MobileNumber= model.PhoneNumber, Email = fbUser.Email, Name = string.IsNullOrWhiteSpace(fbUser.Name) ? model.Name : fbUser.Name, PhoneNumber = model.PhoneNumber, Photo = model.Photo, CountryCode = model.CountryCode };
+                    user.Id = Guid.NewGuid().ToString();
+                    IdentityResult result = await UserManager.CreateAsync(user, userPassword+ randomPassword);
+
+                    if (!result.Succeeded)
+                    {
+                        return GetErrorResult(result);
+
+                    }
+
+
+                    IdentityResult roleResult;
+                    bool adminRoleExists = await AppRoleManager.RoleExistsAsync("User");
+                    if (!adminRoleExists)
+                    {
+                        roleResult = await AppRoleManager.CreateAsync(new RoleForUser()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Name = "User"
+                        });
+                    }
+
+                    var userResult = await UserManager.AddToRoleAsync(user.Id, "User");
+                }
+                return Ok(GenerateLocalAccessTokenResponse(user.UserName, user.Id));
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+          
+
+        }
+
+        private JObject GenerateLocalAccessTokenResponse(string userName, string userId)
+        {
+            var tokenExpiration = TimeSpan.FromDays(360);
+
+            ClaimsIdentity identity = new ClaimsIdentity(OAuthDefaults.AuthenticationType);
+
+            identity.AddClaim(new Claim(ClaimTypes.Name, userName));
+            identity.AddClaim(new Claim(ClaimTypes.Role, "User"));
+            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, userId));
+
+            var props = new AuthenticationProperties()
+            {
+                IssuedUtc = DateTime.UtcNow,
+                ExpiresUtc = DateTime.UtcNow.Add(tokenExpiration),
+            };
+
+            var ticket = new AuthenticationTicket(identity, props);
+
+            var accessToken = Startup.OAuthBearerOptions.AccessTokenFormat.Protect(ticket);
+
+            var user = UserManager.FindByEmail(userName);
+
+            JObject tokenResponse = new JObject(
+                                        new JProperty("userName", userName),
+                                        new JProperty("access_token", accessToken),
+                                        new JProperty("token_type", "bearer"),
+                                        new JProperty("UserId", user.Id),
+                                        new JProperty("expires_in", tokenExpiration.TotalSeconds.ToString()),
+                                        new JProperty(".issued", ticket.Properties.IssuedUtc.ToString()),
+                                        new JProperty(".expires", ticket.Properties.ExpiresUtc.ToString())
+        );
+
+            return tokenResponse;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.Route("FacebookLogin")]
+        public async Task<IHttpActionResult> FacebookLogin(FaceBookTokenVm token)
+        {
+            if (string.IsNullOrEmpty(token.Token))
+            {
+                return BadRequest("Invalid OAuth access token");
+            }
+
+            var tokenExpirationTimeSpan = TimeSpan.FromDays(360);
+            // Get the fb access token and make a graph call to the /me endpoint
+            var fbUser = await VerifyFacebookAccessToken(token.Token);
+            if (fbUser?.Email == null)
+            {
+                return BadRequest("Invalid OAuth access token");
+            }
+
+            // Check if the user is already registered
+            var user = await UserManager.FindByEmailAsync(fbUser.Email);
+            // If not, register it
+            if (user == null)
+            {
+                return BadRequest("user not found");
+            }
+            if (user.PhoneNumberConfirmed == false)
+            {
+                return BadRequest("confirm your mobile number");
+
+            }
+            return Ok(GenerateLocalAccessTokenResponse(user.UserName, user.Id));
+
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.Route("TwitterLogin")]
+        public async Task<IHttpActionResult> TwitterLogin(LoginTwitterExternalBindingModel model)
+        {
+            if (string.IsNullOrEmpty(model.AccessToken) || string.IsNullOrEmpty(model.AccessTokenSecret))
+            {
+                return BadRequest("Invalid OAuth access token");
+            }
+            Auth.SetUserCredentials(ConfigurationManager.AppSettings["Twitter.ConsumerKey"], ConfigurationManager.AppSettings["Twitter.ConsumerSecretKey"], model.AccessToken, model.AccessTokenSecret);
+            var twUser = Tweetinvi.User.GetAuthenticatedUser();
+
+            var tokenExpirationTimeSpan = TimeSpan.FromDays(360);
+            // Get the fb access token and make a graph call to the /me endpoint
+            if (twUser == null)
+            {
+                return BadRequest("user not found");
+            }
+
+            // Check if the user is already registered
+            var user = await UserManager.FindByEmailAsync(twUser.Email);
+            // If not, register it
+            if (user == null)
+            {
+                return BadRequest("User not found");
+            }
+            if (user.PhoneNumberConfirmed == false)
+            {
+                return BadRequest("confirm your mobile number");
+
+            }
+            return Ok(GenerateLocalAccessTokenResponse(user.UserName, user.Id));
+
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.Route("TwitterRegister")]
+        public async Task<IHttpActionResult> TwitterRegister(RegisterExternalBindingModel2 model)
+        {
+            if (string.IsNullOrEmpty(model.AccessToken) || string.IsNullOrEmpty(model.AccessTokenSecret))
+            {
+                return BadRequest("Invalid OAuth access token");
+            }
+            Auth.SetUserCredentials(ConfigurationManager.AppSettings["Twitter.ConsumerKey"], ConfigurationManager.AppSettings["Twitter.ConsumerSecretKey"], model.AccessToken, model.AccessTokenSecret);
+            var twUser = Tweetinvi.User.GetAuthenticatedUser();
+
+            var tokenExpirationTimeSpan = TimeSpan.FromDays(360);
+            // Get the fb access token and make a graph call to the /me endpoint
+            if (twUser?.Email == null)
+            {
+                return BadRequest("invalid token");
+            }
+            // Check if the user is already registered
+            var user = await UserManager.FindByEmailAsync(twUser.Email);
+            // If not, register it
+            if (user == null)
+            {
+
+                var randomPassword = System.Web.Security.Membership.GeneratePassword(10, 0) + "1Ds@";
+
+                user = new User() { UserName = twUser.Email, Email = twUser.Email, Name = twUser.Name.IsNullOrWhiteSpace() ? model.Name : twUser.Name, PhoneNumber = model.PhoneNumber, Photo = twUser.ProfileImageUrl, CountryCode = model.CountryCode };
+
+                IdentityResult result = await UserManager.CreateAsync(user, randomPassword);
+                if (!result.Succeeded)
+                {
+                    return GetErrorResult(result);
+
+                }
+                IdentityResult roleResult;
+                bool adminRoleExists = await AppRoleManager.RoleExistsAsync("User");
+                if (!adminRoleExists)
+                {
+                    roleResult = await AppRoleManager.CreateAsync(new RoleForUser()
+                    {
+                        Name = "User"
+                    });
+                }
+
+                var userResult = await UserManager.AddToRoleAsync(user.Id, "User");
+            }
+            return Ok(GenerateLocalAccessTokenResponse(user.UserName, user.Id));
+
+        }
+        private async Task<FacebookUserViewModel> VerifyFacebookAccessToken(string accessToken)
+        {
+
+            FacebookUserViewModel fbUser = null;
+            var path = "https://graph.facebook.com/me?fields=id,name,email&access_token=" + accessToken;
+            var client = new HttpClient();
+            var uri = new Uri(path);
+            var response = await client.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                fbUser = Newtonsoft.Json.JsonConvert.DeserializeObject<FacebookUserViewModel>(content);
+            }
+
+            return fbUser;
+        }
         #region Helpers
 
         private IAuthenticationManager Authentication

@@ -18,14 +18,14 @@ using Microsoft.AspNet.Identity;
 
 namespace XYZ.APIs.Controllers
 {
-    public class AdminsODataController : BaseODataController<IAdminsBusinessManager, Admin, AdminVM>
+    public class AdminsController : BaseODataController<IAdminsBusinessManager, Admin, AdminVM>
     {
 
         public IAdminsBusinessManager AdminsBusinessManager { get; set; }
 
 
         [Inject]
-        public AdminsODataController(IAdminsBusinessManager adminsBusinessManager) : base(adminsBusinessManager)
+        public AdminsController(IAdminsBusinessManager adminsBusinessManager) : base(adminsBusinessManager)
         {
             AdminsBusinessManager = adminsBusinessManager;
         }

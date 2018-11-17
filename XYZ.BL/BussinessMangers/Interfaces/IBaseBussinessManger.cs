@@ -28,6 +28,7 @@ namespace XYZ.BL.BussinessMangers.Interfaces
         List<TEntity> SaveList(List<TEntity> items);
         void DeleteByFilter(Expression<Func<TEntity, bool>> filter);
 
+        BussinessCustomResponse<TEntity> DeleteSoftly(object id);
 
 
     }

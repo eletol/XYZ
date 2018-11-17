@@ -1,13 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Newtonsoft.Json;
 
-namespace DAL.Models
+namespace XYZ.DAL.Models
 {
     public abstract class LookupBase: EntityBase
     {
         public string Name { get; set; }
+        public LookupBase()
+        {
+            IsDeleted = false;
+            CreationDate = DateTime.Now;
+            LastUpdate= DateTime.Now;
+        }
     }
 }

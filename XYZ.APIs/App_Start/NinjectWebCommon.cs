@@ -1,8 +1,6 @@
 using System;
 using System.Web;
 using System.Web.Http;
-using DAL.Repository.Classes;
-using DAL.Repository.Interfaces;
 using XYZ.APIs;
 using XYZ.BL.BussinessMangers.Classes;
 using XYZ.BL.BussinessMangers.Interfaces;
@@ -74,8 +72,15 @@ namespace XYZ.APIs
             kernel.Bind<IDbContext>().To<DBContext>().InRequestScope();
             kernel.Bind<IUnitOfWork>().To<UnitOfWork<DBContext>>().InRequestScope();
             kernel.Bind<IAdminsBusinessManager>().To<AdminsBusinessManager<AdminsRepository>>().InRequestScope(); ;
-            kernel.Bind<IClientUsersBusinessManager>().To<ClientUsersBusinessManager<ClientUsersRepository>>().InRequestScope(); ;
-            kernel.Bind<IPlayerStatusBusinessManager>().To<PlayerStatusBusinessManager<PlayerStatusRepository>>().InRequestScope(); ;
+            kernel.Bind<IUsersBusinessManager>().To<UsersBusinessManager<UsersRepository>>().InRequestScope(); ;
+            kernel.Bind<ITagStatusBusinessManager>().To<TagStatusBusinessManager<TagStatusRepository>>().InRequestScope(); ;
+            kernel.Bind<ITagsBusinessManager>().To<TagsBusinessManager<TagsRepository>>().InRequestScope(); ;
+            kernel.Bind<ITagLogsBusinessManager>().To<TagLogsBusinessManager<TagLogsRepository>>().InRequestScope(); ;
+            kernel.Bind<IGroupsBusinessManager>().To<GroupsBusinessManager<GroupsRepository>>().InRequestScope(); ;
+            kernel.Bind<IUserDevicesBusinessManager>().To<UserDevicesBusinessManager<UserDevicesRepository>>().InRequestScope(); ;
+            kernel.Bind<IUserFriendsBusinessManager>().To<UserFriendsBusinessManager<UserFriendsRepository>>().InRequestScope(); ;
+            kernel.Bind<IUserGroupsBusinessManager>().To<UserGroupsBusinessManager<UserGroupsRepository>>().InRequestScope(); ;
+            kernel.Bind<IUserFriendBlocksBusinessManager>().To<UserFriendBlocksBusinessManager<UserFriendBlocksRepository>>().InRequestScope(); ;
 
 
         }

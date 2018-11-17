@@ -6,12 +6,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using XYZ.DAL.Collections.Interfaces;
 using XYZ.DAL.DBContext;
+using XYZ.DAL.Models;
 
 namespace XYZ.DAL.Collections.Classes
 {
     public class BaseCollection<TModel, TContext> :
-        IBaseCollection<TModel, TContext> where TModel : class, new()
-        where TContext : IDbContext
+        IBaseCollection<TModel, TContext> where TModel : class, IBaseModel, new() where TContext : IDbContext
     {
         private TContext _context;
         private DbSet<TModel> dbSet;
@@ -43,7 +43,7 @@ namespace XYZ.DAL.Collections.Classes
             {
                 query = query.Where(filter);
             }
-
+            query=query.Where(s => s.IsDeleted == false);
             foreach (var includeProperty in includeProperties)
             {
                 query = query.Include(includeProperty);
@@ -62,6 +62,7 @@ namespace XYZ.DAL.Collections.Classes
         /// <returns></returns>
         public virtual TModel GetByID(object id)
         {
+            
             return dbSet.Find(id);
         }
         /// <summary>

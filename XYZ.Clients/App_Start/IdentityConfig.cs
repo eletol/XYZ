@@ -7,20 +7,32 @@ using Microsoft.Owin;
 
 namespace XYZ.Clients
 {
-    // Configure the application ClientUser manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
-
-    public class ApplicationUserManager : UserManager<ClientUser, string>
+    // Configure the application User manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
+    public class ApplicationRoleManager : RoleManager<RoleForUser>
     {
-        public ApplicationUserManager(UserStore<ClientUser, RoleForClient, string, ClientLogin, ClientRole, ClientClaim> store)
+        public ApplicationRoleManager(IRoleStore<RoleForUser, string> roleStore)
+            : base(roleStore)
+        {
+        }
+
+        public static ApplicationRoleManager Create(IdentityFactoryOptions<ApplicationRoleManager> options, IOwinContext context)
+        {
+            var appRoleManager = new ApplicationRoleManager(new RoleStore<RoleForUser,string,UserRole>(context.Get<ApplicationDbContext>()));
+            return appRoleManager;
+        }
+    }
+    public class ApplicationUserManager : UserManager<User, string>
+    {
+        public ApplicationUserManager(UserStore<User, RoleForUser, string, UserLogin, UserRole, UserClaim> store)
             : base(store)
         {
         }
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
-            var manager = new ApplicationUserManager(new UserStore<ClientUser, RoleForClient, string, ClientLogin, ClientRole, ClientClaim>(context.Get<ApplicationDbContext>()));
+            var manager = new ApplicationUserManager(new UserStore<User, RoleForUser, string, UserLogin, UserRole, UserClaim>(context.Get<ApplicationDbContext>()));
             // Configure validation logic for usernames
-            manager.UserValidator = new UserValidator<ClientUser>(manager)
+            manager.UserValidator = new UserValidator<User>(manager)
             {
                 AllowOnlyAlphanumericUserNames = false,
                 RequireUniqueEmail = true
@@ -37,7 +49,7 @@ namespace XYZ.Clients
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
-                manager.UserTokenProvider = new DataProtectorTokenProvider<ClientUser>(dataProtectionProvider.Create("ASP.NET Identity"));
+                manager.UserTokenProvider = new DataProtectorTokenProvider<User>(dataProtectionProvider.Create("ASP.NET Identity"));
             }
             return manager;
         }

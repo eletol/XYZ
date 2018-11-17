@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 using AutoMapper;
-using DAL.Models;
-using DAL.Repository.Interfaces;
 using XYZ.BL.BussinessMangers.Interfaces;
 using XYZ.BL.Helper;
 using XYZ.BL.ViewModels;
@@ -12,20 +10,20 @@ using XYZ.DAL.UnitOfWork;
 
 namespace XYZ.BL.BussinessMangers.Classes
 {
-    public class PlayerStatusBusinessManager
-        <TRepository> : BaseBussinessManger<PlayerStatus, TRepository, PlayerStatusVM>,
-            IPlayerStatusBusinessManager where TRepository : IPlayerStatusRepository
+    public class TagStatusBusinessManager
+        <TRepository> : BaseBussinessManger<TagStatus, TRepository, TagStatusVM>,
+            ITagStatusBusinessManager where TRepository : ITagStatusRepository
     {
 
-        public PlayerStatusBusinessManager(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public TagStatusBusinessManager(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
 
         }
-        public override BussinessCustomResponse<PlayerStatusVM> Update(PlayerStatusVM entityToUpdateVM)
+        public override BussinessCustomResponse<TagStatusVM> Update(TagStatusVM entityToUpdateVM)
         {
             return base.Update(entityToUpdateVM);
         }
-        public override BussinessCustomResponse<PlayerStatusVM> Save(PlayerStatusVM itemVM)
+        public override BussinessCustomResponse<TagStatusVM> Save(TagStatusVM itemVM)
         {
         
 

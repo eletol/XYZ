@@ -1,4 +1,6 @@
-﻿using XYZ.APIs;
+﻿using System.Web.Http;
+using System.Web.OData.Extensions;
+using XYZ.APIs;
 using Microsoft.Owin;
 using Owin;
 
@@ -10,6 +12,7 @@ namespace XYZ.APIs
     {
         public void Configuration(IAppBuilder app)
         {
+            GlobalConfiguration.Configuration.EnableDependencyInjection();
             ConfigureAuth(app);
         }
     }

@@ -1,6 +1,4 @@
-﻿using DAL.Repository.Classes;
-using DAL.Repository.Interfaces;
-using XYZ.BL.BussinessMangers.Classes;
+﻿using XYZ.BL.BussinessMangers.Classes;
 using XYZ.BL.BussinessMangers.Interfaces;
 using XYZ.DAL.DBContext;
 using XYZ.DAL.Repository.Classes;
@@ -18,8 +16,8 @@ namespace XYZ.BL.NinjectModules
             Bind<IDbContext>().To<DBContext>().InRequestScope();
             Bind<IUnitOfWork>().To<UnitOfWork<DBContext>>().InRequestScope();
             Bind<IAdminsBusinessManager>().To<AdminsBusinessManager<AdminsRepository>>().InRequestScope();
-            Bind<IClientUsersBusinessManager>().To<ClientUsersBusinessManager<ClientUsersRepository>>().InRequestScope(); ;
-            Bind<IPlayerStatusBusinessManager>().To<PlayerStatusBusinessManager<PlayerStatusRepository>>().InRequestScope(); ;
+            Bind<IUsersBusinessManager>().To<UsersBusinessManager<UsersRepository>>().InRequestScope(); ;
+            Bind<ITagStatusBusinessManager>().To<TagStatusBusinessManager<TagStatusRepository>>().InRequestScope(); ;
 
         }
     }

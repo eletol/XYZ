@@ -1,17 +1,14 @@
-﻿
-using DAL.Collection.Classes;
-using DAL.Models;
-using DAL.Repository.Interfaces;
+﻿using XYZ.DAL.Collections.Classes;
 using XYZ.DAL.DBContext;
 using XYZ.DAL.Models;
-using XYZ.DAL.Repository.Classes;
+using XYZ.DAL.Repository.Interfaces;
 
-namespace DAL.Repository.Classes
+namespace XYZ.DAL.Repository.Classes
 {
   
-    public class PlayerStatusRepository : BaseRepository<PlayerStatusCollection, PlayerStatus>, IPlayerStatusRepository
+    public class TagStatusRepository : BaseRepository<TagStatusCollection, TagStatus>, ITagStatusRepository
     {
-        public PlayerStatusRepository(IDbContext context) : base(context)
+        public TagStatusRepository(IDbContext context) : base(context)
         {
             Context = context;
 

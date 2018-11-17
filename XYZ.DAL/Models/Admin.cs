@@ -10,15 +10,19 @@ using Microsoft.AspNet.Identity.EntityFramework;
 namespace XYZ.DAL.Models
 {
     [Table("Admin")]
-    public partial class Admin : IdentityUser<string, AdminLogin, AdminRole, AdminClaim>
+    public partial class Admin : IdentityUser<string, AdminLogin, AdminRole, AdminClaim>, IBaseModel
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Admin()
         {
-       
+            CreationDate = DateTime.Now;
+            LastUpdate = DateTime.Now;
+            IsDeleted = false;
         }
+        public DateTime? CreationDate { get; set; }
+        public DateTime? LastUpdate { get; set; }
+        public bool? IsDeleted { get; set; }
 
-     
 
         public bool? Active { get; set; }
 

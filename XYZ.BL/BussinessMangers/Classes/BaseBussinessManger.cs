@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using AutoMapper;
 using XYZ.BL.BussinessMangers.Interfaces;
 using XYZ.BL.Helper;
+using XYZ.DAL.Models;
 using XYZ.DAL.Repository.Interfaces;
 using XYZ.DAL.UnitOfWork;
 
@@ -16,7 +17,7 @@ namespace XYZ.BL.BussinessMangers.Classes
     /// <typeparam name="TEntity"></typeparam>
     /// <typeparam name="TRepository"></typeparam>
     /// <typeparam name="TEntityVM"></typeparam>
-    public class BaseBussinessManger<TEntity, TRepository, TEntityVM> : IBaseBussinessManger<TEntity, TEntityVM> where TEntity : class
+    public class BaseBussinessManger<TEntity, TRepository, TEntityVM> : IBaseBussinessManger<TEntity, TEntityVM> where TEntity : class, IBaseModel
         where TRepository : IBaseRepository<TEntity>
           where TEntityVM : class
     {
@@ -27,7 +28,7 @@ namespace XYZ.BL.BussinessMangers.Classes
             {
                 throw new ArgumentNullException("no repository provided");
             }
-         
+            Mapper.Reset();
             Mapper.Initialize(cfg => {
                 cfg.CreateMap<TEntity, TEntityVM>();
                 cfg.CreateMap<TEntityVM, TEntity>();
@@ -50,7 +51,14 @@ namespace XYZ.BL.BussinessMangers.Classes
         {
             return Repository.GetById(id);
         }
-
+        public virtual BussinessCustomResponse<TEntity> DeleteSoftly(object id)
+        {
+            var entity = Repository.GetById(id);
+            entity.IsDeleted = true;
+            var deletedItem = Repository.Update(entity);
+            UnitOfWork.Save();
+            return BussinessCustomResponse<TEntity>(deletedItem);
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -59,6 +67,10 @@ namespace XYZ.BL.BussinessMangers.Classes
         public virtual  TEntityVM GetVMById(object id)
         {
             TEntity entity = Repository.GetById(id);
+            if (entity.IsDeleted==true)
+            {
+                entity = null;
+            }
             TEntityVM itemVM = Mapper.Map<TEntityVM>(entity);
 
             return itemVM;
@@ -78,6 +90,9 @@ namespace XYZ.BL.BussinessMangers.Classes
         {
     
             TEntity item = Mapper.Map<TEntity>(itemVM);
+            item.CreationDate = DateTime.Now;
+            item.LastUpdate= DateTime.Now;
+            item.IsDeleted = false;
             TEntity addedItem = Repository.Save(item);
             UnitOfWork.Save();
             TEntityVM itemVMNew = Mapper.Map<TEntityVM>(addedItem);

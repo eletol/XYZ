@@ -1,17 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using Newtonsoft.Json;
 
-namespace DAL.Models
+namespace XYZ.DAL.Models
 {
-    public abstract class EntityBase
+    public abstract class EntityBase: IBaseModel
     {
         [JsonIgnore]
-        public int Id { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime LastUpdate { get; set; }
+        public long Id { get; set; }
+        [JsonIgnore]
+
+        public DateTime? CreationDate { get; set; }
+        [JsonIgnore]
+
+        public DateTime? LastUpdate { get; set; }
+        [JsonIgnore]
+
+        public bool? IsDeleted { get; set; } 
+
 
     }
 }

@@ -1,13 +1,14 @@
-﻿using DAL.Models;
-
-namespace XYZ.DAL.Models
+﻿namespace XYZ.DAL.Models
 {
    
-    public class PlayerStatus : LookupBase
+    public class TagStatus : LookupBase
     {
 
     }
 
+    public class GroupStatus : LookupBase
+    {
 
-    
+    }
+
 }

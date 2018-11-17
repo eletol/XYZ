@@ -1,11 +1,9 @@
-﻿using DAL.Models;
-using XYZ.DAL.Models;
-using XYZ.DAL.Repository.Interfaces;
+﻿using XYZ.DAL.Models;
 
-namespace DAL.Repository.Interfaces
+namespace XYZ.DAL.Repository.Interfaces
 {
  
-    public interface IPlayerStatusRepository : IBaseRepository<PlayerStatus>
+    public interface ITagStatusRepository : IBaseRepository<TagStatus>
     {
 
     }

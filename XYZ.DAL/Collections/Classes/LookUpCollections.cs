@@ -1,15 +1,11 @@
-﻿
-
-using DAL.Collections.Interfaces;
-using DAL.Models;
-using XYZ.DAL.Collections.Classes;
+﻿using XYZ.DAL.Collections.Interfaces;
 using XYZ.DAL.DBContext;
 using XYZ.DAL.Models;
 
-namespace DAL.Collection.Classes
+namespace XYZ.DAL.Collections.Classes
 {
 
-    public class PlayerStatusCollection : BaseCollection<PlayerStatus, IDbContext>, IPlayerStatusCollection
+    public class TagStatusCollection : BaseCollection<TagStatus, IDbContext>, ITagStatusCollection
     {
 
     }
